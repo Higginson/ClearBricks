@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>game 1</title>
+  <style media="screen">
+    canvas {
+      border: 1px black solid;
+    }
+
+  </style>
+</head>
+<body>
+
+<canvas id="id-canvas" width="400" height="300"></canvas>
+<script type="text/javascript">
+  var log = console.log.bind(console);
+
+  var imageFromPath = function (path) {
+    var img = new Image();
+    img.src = path;
+    return img;
+  };
+
+  var Paddle = function () {
+    var image = imageFromPath('paddle.png');
+    var o = {
+      image: image,
+      x: 100,
+      y: 200,
+      speed: 5
+    };
+
+    o.moveLeft = function () {
+      o.x -= o.speed;
+    };
+
+    o.moveRight = function () {
+      o.x += o.speed;
+    };
+    return o;
+  };
+
+  var GuaGame = function () {
+    var g = {};
+    var canvas = document.querySelector('#id-canvas');
+    var context = canvas.getContext('2d');
+
+    g.canvas = canvas;
+    g.context = context;
+    setInterval(function () {
+      //update
+      g.update();
+      //clear
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      //draw
+      g.draw();
+
+
+    }, 1000 / 30);
+    return g;
+
+
+  };
+
+  var __main = function () {
+    var paddle = Paddle();
+
+    var game = GuaGame();
+
+
+    var leftDown = false;
+    var rightDown = false;
+    //events
+    window.addEventListener('keydown', function () {
+      var k = event.key;
+      if (k === 'a') {
+        leftDown = true;
+      } else if (k === 'd') {
+        rightDown = true;
+      }
+    });
+
+    window.addEventListener('keyup', function () {
+      var k = event.key;
+      if (k === 'a') {
+        leftDown = false;
+      } else if (k === 'd') {
+        rightDown = false;
+      }
+    });
+
+
+    game.update = function () {
+      //update x and y
+      if (leftDown) {
+        paddle.moveLeft();
+      } else if (rightDown) {
+        paddle.moveRight();
+      }
+
+    };
+
+    game.draw = function () {
+      game.context.drawImage(paddle.image, paddle.x, paddle.y);
+
+    };
+
+  };
+
+  __main();
+</script>
+</body>
+</html>
