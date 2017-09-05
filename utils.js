@@ -6,6 +6,7 @@ var imageFromPath = function (path) {
   return img;
 };
 
+
 var rectIntersects = function (o, b) {
   if (b.y > o.y && b.y < o.y + o.image.height) {
     if (b.x > o.x && b.x < o.x + o.image.width) {
