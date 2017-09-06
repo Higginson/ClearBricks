@@ -40,7 +40,7 @@ var GuaGame = function (fps, images, runCallback) {
   };
 
   //timer
-  window.fps = 60;
+  window.fps = 30;
   var runLoop = function () {
     //events
     var actions = Object.keys(g.actions);
