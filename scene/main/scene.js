@@ -12,7 +12,6 @@ var Scene = function (game) {
 
   var blocks = loadLevel(game, 1);
 
-
   game.registerAction('a', function () {
     paddle.moveLeft();
   });
@@ -30,7 +29,6 @@ var Scene = function (game) {
       // 跳转到 游戏结束 的场景
       var end = SceneEnd.new(game);
       game.replaceScene(end);
-
     }
 
     //判断相撞
@@ -62,6 +60,7 @@ var Scene = function (game) {
 
     }
   });
+
   s.draw = function () {
     //draw背景
     game.context.fillStyle = "#4D4D4D";

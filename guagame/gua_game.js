@@ -1,48 +1,57 @@
-var GuaGame = function (fps, images, runCallback) {
-  //images 参数是一个对象，里面是图片的引用名字和图片路径
-  //程序会在所有图片载入成功后才运行
-  var g = {
-    scene: null,
-    actions: {},
-    keydowns: {},
-    images: images
-  };
-  var canvas = document.querySelector('#id-canvas');
-  var context = canvas.getContext('2d');
+class GuaGame {
+  constructor(fps, images, runCallback) {
+    window.fps = fps;
+    this.fps = fps;
+    this.images = images;
+    this.runCallback = runCallback;
+    //
+    this.scene = null;
+    this.actions = {};
+    this.keydowns = {};
+    this.canvas = document.querySelector("#id-canvas");
+    this.context = this.canvas.getContext("2d");
 
-  g.canvas = canvas;
-  g.context = context;
+    //events
+    var self = this;//有回调，this作用域会改变，设置self来存储this，当然可以用 箭头函数
+    //这里用两种方式
+    window.addEventListener("keydown", event => {
+      this.keydowns[event.key] = true;
+    });
+    window.addEventListener("keyup", function (event) {
+      self.keydowns[event.key] = false;
+    });
 
-  g.drawImage = function (guaImage) {
-    g.context.drawImage(guaImage.image, guaImage.x, guaImage.y);
-  };
-  //events
-  window.addEventListener("keydown", function (event) {
-    g.keydowns[event.key] = true;
-  });
-  window.addEventListener("keyup", function (event) {
-    g.keydowns[event.key] = false;
-  });
+    this.init();
+  }
 
+  static instance(...args) {
+    this.i = this.i || new this(...args);
+    return this.i;
+  }
+
+  drawImage(img) {
+    this.context.drawImage(img.image, img.x, img.y);
+  }
+
+  /*箭头函数规避 this 作用域陷阱*/
   //update
-  g.update = function () {
-    g.scene.update();
+  update() {
+    this.scene.update();
   };
 
   //draw
-  g.draw = function () {
-    g.scene.draw()
+  draw() {
+    this.scene.draw()
   };
 
-  //
-  g.registerAction = function (key, callback) {
-    g.actions[key] = callback;
+  //register 按键
+  registerAction(key, callback) {
+    this.actions[key] = callback;
   };
 
-  //timer
-  window.fps = 30;
-  var runLoop = function () {
+  runLoop() {
     //events
+    var g = this;
     var actions = Object.keys(g.actions);
     for (var i = 0; i < actions.length; i++) {
       var key = actions[i];
@@ -56,38 +65,41 @@ var GuaGame = function (fps, images, runCallback) {
     //update
     g.update();
     //clear
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    g.context.clearRect(0, 0, g.canvas.width, g.canvas.height);
     //draw
     g.draw();
     //next run loop
     setTimeout(function () {
-      runLoop();
+      g.runLoop();
     }, 1000 / window.fps);
-
   };
 
-  var loads = [];
+  init() {
+    var g = this;
+    var loads = [];
 
-  //预先载入所有图片
-  var names = Object.keys(images);
-  for (var i = 0; i < names.length; i++) {
-    let name = names[i];
-    var path = images[name];
-    let img = new Image();
-    img.src = path;
-    img.onload = function () {
-      //存入 g.images中
-      g.images[name] = img;
+    //预先载入所有图片
+    var names = Object.keys(g.images);
+    for (var i = 0; i < names.length; i++) {
+      let name = names[i];
+      var path = g.images[name];
+      let img = new Image();
+      img.src = path;
+      img.onload = function () {
+        //存入 g.images中
+        g.images[name] = img;
 
-      //所有图片都成功载入之后，调用run
-      loads.push(1);
-      if (loads.length === names.length) {
-        g.__start();
+        //所有图片都成功载入之后，调用run
+        loads.push(1);
+        if (loads.length === names.length) {
+          g.__start();
+        }
       }
     }
   }
 
-  g.imageByName = function (name) {
+  imageByName(name) {
+    var g = this;
     var img = g.images[name];
     var image = {
       w: img.width,
@@ -97,21 +109,20 @@ var GuaGame = function (fps, images, runCallback) {
     return image;
   };
 
-  g.runWithScene = function (scene) {
+  runWithScene(scene) {
+    var g = this;
     g.scene = scene;
     //开始运行程序
     setTimeout(function () {
-      runLoop();
-    }, 1000 / fps);
+      g.runLoop();
+    }, 1000 / window.fps);
   };
 
-  g.__start = function () {
-    runCallback(g);
+  replaceScene(scene) {
+    this.scene = scene;
   };
 
-  g.replaceScene = function (scene) {
-    g.scene = scene;
+  __start() {
+    this.runCallback(this);
   };
-
-  return g;
-};
+}

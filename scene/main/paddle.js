@@ -33,12 +33,6 @@ var Paddle = function (game) {
     return x >= x1 && x <= x2;
   };
   o.collide = function (ball) {
-    // if (ball.y + ball.h > o.y) {
-    //   if (ball.x > o.x && ball.x < o.x + o.w) {
-    //     return true;
-    //   }
-    // }
-    // return false;
     var a = o;
     var b = ball;
     if (aInb(a.x, b.x, b.x + b.w) || aInb(b.x, a.x, a.x + a.w)) {
