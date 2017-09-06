@@ -23,7 +23,10 @@ var Scene = function (game) {
   });
 
   s.update = function () {
-    ball.move();
+
+    if (window.paused) {
+      ball.move();
+    }
     //判断游戏结束
     if (ball.y > paddle.y) {
       // 跳转到 游戏结束 的场景
@@ -50,20 +53,9 @@ var Scene = function (game) {
 
   //mouse event
   var enableDrag = false;
-  game.canvas.addEventListener('mousedown', function () {
-    var x = event.offsetX;
-    var y = event.offsetY;
-    // 检查是否点中了ball
-    if (ball.hasPoint(x, y)) {
-      //设置拖拽状态
-      enableDrag = true;
-
-    }
-  });
-
   s.draw = function () {
     //draw背景
-    game.context.fillStyle = "#4D4D4D";
+    game.context.fillStyle = "#8e7f86";
     game.context.fillRect(0, 0, 400, 300);
 
     //draw
@@ -78,8 +70,18 @@ var Scene = function (game) {
     }
     //draw labels
     game.context.fillText("分数： " + score, 10, 290);
-
   };
+
+  game.canvas.addEventListener('mousedown', function () {
+    var x = event.offsetX;
+    var y = event.offsetY;
+    // 检查是否点中了ball
+    if (ball.hasPoint(x, y)) {
+      //设置拖拽状态
+      enableDrag = true;
+
+    }
+  });
 
   game.canvas.addEventListener('mousemove', function () {
     var x = event.offsetX;

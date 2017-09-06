@@ -2,7 +2,7 @@ var Paddle = function (game) {
   var o = game.imageByName('paddle');
 
   o.x = 100;
-  o.y = 250;
+  o.y = 280;
   o.speed = 15;
 
   o.moveLeft = function () {

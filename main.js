@@ -1,10 +1,10 @@
 var loadLevel = function (game, n) {
   n = n - 1;
-  var level = levels[n];
-  var blocks = [];
-  for (var i = 0; i < level.length; i++) {
-    var p = level[i];
-    var b = Block(game, p);
+  let level = levels[n];
+  let blocks = [];
+  for (let i = 0; i < level.length; i++) {
+    let p = level[i];
+    let b = Block.instance(game, p);
     blocks.push(b);
   }
   return blocks;
@@ -13,17 +13,13 @@ var loadLevel = function (game, n) {
 var enableDebugMode = function (game, enable) {
   if (!enable) {
     return;
-
   }
+  window.paused = true;
   //为了debug
   window.addEventListener('keydown', function (event) {
-    var k = event.key;
     if (event.key === 'p') {
       //暂停
       window.paused = !window.paused;
-    } else if ('123'.includes(event.key)) {//stringObj.includes() 返回一个布尔值，该值指示传入字符串是否包含在字符串对象中。
-      //为了debug临时加的载入关卡功能
-      var blocks = loadLevel(game, Number(k));
     }
   });
 
@@ -42,7 +38,7 @@ var __main = function () {
     paddle: 'img/paddle.png'
   };
 
-  var game =  GuaGame.instance(30, images, function (g) {
+  var game = GuaGame.instance(30, images, function (g) {
     var s = SceneTitle.new(g);
     g.runWithScene(s);
   });
